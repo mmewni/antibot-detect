@@ -1,10 +1,3 @@
-"""HTTP fetching built on curl_cffi.
-
-We impersonate a real Chrome build so the TLS/JA3 fingerprint matches the
-``User-Agent`` curl_cffi sends, which is what lets us reach pages that would
-otherwise serve a TLS-level block. The result is normalised into a
-:class:`FetchResult` that detectors can scan without caring about the transport.
-"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -49,13 +42,9 @@ DEFAULT_HEADERS: dict[str, str] = {
 
 
 class FetchError(Exception):
-    """Raised when a URL cannot be fetched (DNS, connection, timeout, TLS, ...)."""
-
-
+    """for when URL cannot be fetched"""
 @dataclass
 class RedirectHop:
-    """A single intermediate response captured while following redirects."""
-
     url: str
     status: int
     headers: dict[str, str] = field(default_factory=dict)
@@ -72,13 +61,6 @@ class RedirectHop:
 
 @dataclass
 class FetchResult:
-    """Normalised result of fetching a URL, plus convenience scanners.
-
-    The ``header*`` / ``cookie*`` / ``find_in_body`` helpers transparently span
-    the final response *and* every redirect hop, so detectors don't have to walk
-    the chain themselves.
-    """
-
     requestedUrl: str
     finalUrl: str
     status: int
@@ -88,13 +70,11 @@ class FetchResult:
     redirectChain: list[RedirectHop] = field(default_factory=list)
 
     def _header_dicts(self) -> list[dict[str, str]]:
-        """All header dicts, redirect hops first then the final response."""
         dicts = [hop.headers for hop in self.redirectChain]
         dicts.append(self.headers)
         return dicts
 
     def header(self, name: str) -> Optional[str]:
-        """First value for ``name`` across all hops, or ``None``."""
         target = name.lower()
         for hdrs in self._header_dicts():
             for key, value in hdrs.items():
@@ -103,7 +83,6 @@ class FetchResult:
         return None
 
     def headers_with_prefix(self, prefix: str) -> list[tuple[str, str]]:
-        """All ``(name, value)`` header pairs whose name starts with ``prefix``."""
         p = prefix.lower()
         seen: set[str] = set()
         out: list[tuple[str, str]] = []
@@ -116,12 +95,10 @@ class FetchResult:
         return out
 
     def header_contains(self, name: str, needle: str) -> bool:
-        """True if header ``name`` exists and contains ``needle`` (case-insensitive)."""
         value = self.header(name)
         return value is not None and needle.lower() in value.lower()
 
     def all_cookies(self) -> dict[str, str]:
-        """Cookies merged across every hop (final response wins on conflict)."""
         merged: dict[str, str] = {}
         for hop in self.redirectChain:
             merged.update(hop.cookies)
@@ -135,7 +112,6 @@ class FetchResult:
         return [c for c in self.all_cookies() if c.startswith(prefix)]
 
     def find_in_body(self, markers: list[str]) -> list[str]:
-        """Return the subset of ``markers`` present in the body (case-insensitive)."""
         if not self.body:
             return []
         low = self.body.lower()
@@ -156,7 +132,6 @@ class FetchResult:
 
 
 def _normalise_url(url: str) -> str:
-    """Ensure the URL has a scheme; default to https when none is given."""
     url = url.strip()
     parsed = urlparse(url)
     if not parsed.scheme:
@@ -167,7 +142,6 @@ def _normalise_url(url: str) -> str:
 
 
 def _cookies_to_dict(jar: object) -> dict[str, str]:
-    """Best-effort conversion of curl_cffi's cookie container to a plain dict."""
     if jar is None:
         return {}
     try:
@@ -182,11 +156,6 @@ def fetch(
     timeout: int = DEFAULT_TIMEOUT,
     impersonate: str = DEFAULT_IMPERSONATE,
 ) -> FetchResult:
-    """Fetch ``url`` and return a :class:`FetchResult`.
-
-    Follows redirects (capturing each hop), retries once on a connection error,
-    and raises :class:`FetchError` with a clean message on any failure.
-    """
     target = _normalise_url(url)
 
     last: Optional[Exception] = None

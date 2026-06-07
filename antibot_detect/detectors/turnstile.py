@@ -1,9 +1,3 @@
-"""Cloudflare Turnstile detector (body markers only).
-
-Distinct from the main Cloudflare CDN/Bot-Management detector: Turnstile is the
-embeddable CAPTCHA-alternative widget and can appear on sites not otherwise
-fronted by Cloudflare.
-"""
 from __future__ import annotations
 
 from typing import Optional

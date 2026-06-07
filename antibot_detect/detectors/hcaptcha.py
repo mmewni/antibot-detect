@@ -1,4 +1,3 @@
-"""hCaptcha detector (body markers only)."""
 from __future__ import annotations
 
 from typing import Optional

@@ -1,5 +1,3 @@
-"""Core detector primitives: the Detection dataclass, Confidence enum, and the
-Detector base class, plus small helpers shared by every detector."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

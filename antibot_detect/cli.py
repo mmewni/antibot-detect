@@ -1,8 +1,3 @@
-"""Command-line interface for antibot-detect.
-
-Usage:
-    antibot-detect <url> [--json] [--all] [--timeout SECS] [--verbose]
-"""
 from __future__ import annotations
 
 import json
@@ -148,10 +143,6 @@ def main(
     timeout: int,
     verbose: bool,
 ) -> None:
-    """Identify which anti-bot / bot-management solution a website uses.
-
-    Detection only — this tool never attempts to bypass any protection.
-    """
     console = Console()
 
     try:

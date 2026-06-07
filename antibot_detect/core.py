@@ -1,4 +1,3 @@
-"""Orchestration: fetch a URL, then run every detector against the result."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -18,8 +17,6 @@ __all__ = ["AnalysisResult", "analyze", "run_detectors", "FetchError"]
 
 @dataclass
 class AnalysisResult:
-    """Everything produced by analysing one URL."""
-
     fetch: FetchResult
     detections: list[Detection] = field(default_factory=list)
     notDetected: list[str] = field(default_factory=list)
@@ -40,11 +37,6 @@ def run_detectors(
     result: FetchResult,
     detectors: list[Detector] | None = None,
 ) -> tuple[list[Detection], list[str]]:
-    """Run ``detectors`` against ``result``.
-
-    Returns ``(detections, notDetectedNames)`` with detections sorted
-    strongest-confidence first.
-    """
     detectors = detectors if detectors is not None else ALL_DETECTORS
     detections: list[Detection] = []
     notDetected: list[str] = []
@@ -67,7 +59,6 @@ def analyze(
     impersonate: str = DEFAULT_IMPERSONATE,
     detectors: list[Detector] | None = None,
 ) -> AnalysisResult:
-    """Fetch ``url`` and run all detectors. May raise :class:`FetchError`."""
     result = fetch(url, timeout=timeout, impersonate=impersonate)
     detections, notDetected = run_detectors(result, detectors)
     return AnalysisResult(

@@ -1,4 +1,3 @@
-"""PerimeterX / HUMAN Security bot defense detector."""
 from __future__ import annotations
 
 from typing import Optional
