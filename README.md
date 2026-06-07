@@ -157,7 +157,7 @@ for detection in result.detections:
 
 ---
 
-## Future Additions
+## Roadmap
 
 - **`--browser` mode** — an optional Playwright-backed fetch that executes
   JavaScript, so detectors can also see dynamically injected challenge widgets
@@ -173,7 +173,7 @@ for detection in result.detections:
 
 > This tool is for **defensive security research, web development, and
 > educational purposes**. It only identifies bot-management solutions via
-> passive fingerprinting — it does **not** attempt to bypass them.
+> passive fingerprinting, it does **not** attempt to bypass them.
 
 ---
 
