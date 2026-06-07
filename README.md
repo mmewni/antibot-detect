@@ -49,9 +49,11 @@ Requires **Python 3.10+**.
 git clone https://github.com/mmewni/antibot-detect.git
 cd antibot-detect
 
-# a virtual environment
+# activate
 python -m venv .venv
-source .venv/bin/activate         # Windows: .venv\Scripts\activate
+source .venv/bin/activate         # Linux/Mac
+.venv\Scripts\activate            # Windows cmd
+.venv\Scripts\Activate.ps1        # Powershell
 
 # editable install
 pip install -e .
