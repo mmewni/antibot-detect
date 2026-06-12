@@ -9,11 +9,7 @@ if TYPE_CHECKING:
 
 
 class Confidence(str, Enum):
-    """How sure a detector is that a solution is present.
-
-    Inherits from ``str`` so it serialises cleanly to JSON as ``"HIGH"`` etc.
-    """
-
+    
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
     LOW = "LOW"
@@ -23,13 +19,11 @@ class Confidence(str, Enum):
 
     @property
     def rank(self) -> int:
-        """Numeric ordering so results can be sorted strongest-first."""
         return {"HIGH": 3, "MEDIUM": 2, "LOW": 1}[self.value]
 
 
 @dataclass
 class Detection:
-    """A single positive identification produced by a :class:`Detector`."""
 
     name: str
     confidence: Confidence
@@ -44,12 +38,6 @@ class Detection:
 
 
 class Detector:
-    """Base class for all detectors.
-
-    Subclasses set :attr:`name` and implement :meth:`detect`, returning a
-    :class:`Detection` when their signature matches, or ``None`` otherwise.
-    """
-
     name: str = "Detector"
 
     def detect(self, result: "FetchResult") -> Optional[Detection]:
@@ -57,7 +45,6 @@ class Detector:
 
 
 def truncate(value: str, limit: int = 80) -> str:
-    """Collapse whitespace and shorten a value for display in evidence lines."""
     flat = " ".join(value.split())
     return flat if len(flat) <= limit else flat[: limit - 1] + "…"
 
@@ -70,16 +57,6 @@ def make_detection(
     weak: int = 0,
     forceLow: bool = False,
 ) -> Optional[Detection]:
-    """Build a :class:`Detection` from gathered evidence and signal weights.
-
-    Confidence policy (per the project spec):
-      * one or more *strong* signals -> HIGH
-      * multiple signals of any kind  -> HIGH
-      * exactly one *weak* signal     -> MEDIUM
-      * otherwise / ambiguous         -> LOW
-
-    Returns ``None`` when no evidence was gathered.
-    """
     total = strong + weak
     if total == 0 or not evidence:
         return None
