@@ -1,7 +1,3 @@
-"""Detector registry.
-
-``ALL_DETECTORS`` is the ordered list the core runs against every fetch.
-"""
 from __future__ import annotations
 
 from antibot_detect.detectors.akamai import AkamaiDetector
